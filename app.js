@@ -45,17 +45,21 @@ app.post('/api', async (req, res) => {
     };
 
     // Send request and log result
-    const responses = await sessionClient.detectIntent(request);
-    console.log('Detected intent');
-    const result = responses[0].queryResult;
-    console.log(`  Query: ${result.queryText}`);
-    console.log(`  Response: ${result.fulfillmentText}`);
-    if (result.intent) {
-        console.log(`  Intent: ${result.intent.displayName}`);
-    } else {
-        console.log(`  No intent matched.`);
+    try {
+        const responses = await sessionClient.detectIntent(request);
+        console.log('Detected intent');
+        const result = responses[0].queryResult;
+        console.log(`  Query: ${result.queryText}`);
+        console.log(`  Response: ${result.fulfillmentText}`);
+        if (result.intent) {
+            console.log(`  Intent: ${result.intent.displayName}`);
+        } else {
+            console.log(`  No intent matched.`);
+        }
+        res.status(200).json(parseDialogFlowResponse(result));
+    } catch (e) {
+        res.status(500).json(e);
     }
-    res.status(200).json(parseDialogFlowResponse(result));
 })
 
 app.listen(port, () => {
