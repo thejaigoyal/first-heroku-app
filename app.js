@@ -18,7 +18,7 @@ app.use(express.urlencoded({
 }))
 
 app.get('/', (req, res) => {
-    res.status(200).send('Server is working.')
+    res.status(200).send('Server is working fine.')
     console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 })
 
