@@ -39,7 +39,7 @@ app.post('/api', async (req, res) => {
         queryInput: {
             text: {
                 // The query to send to the dialogflow agent
-                text: req.body.text ? req.body.text : "Hi",
+                text: req.body.message ? req.body.message : "Hi",
                 // The language used by the client (en-US)
                 languageCode: 'en-US',
             },
