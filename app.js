@@ -1,7 +1,6 @@
 const express = require('express')
 const dialogflow = require('dialogflow');
 const uuid = require('uuid');
-const creds = require("./GCPKeys.json");
 const {
     parseDialogFlowResponse
 } = require("./utills/parseDialogFlowResponse");
@@ -42,8 +41,7 @@ app.post('/api', async (req, res) => {
                 // The language used by the client (en-US)
                 languageCode: 'en-US',
             },
-        },
-        credentials: creds
+        }
     };
 
     // Send request and log result
