@@ -1,4 +1,10 @@
 const express = require('express')
+const dialogflow = require('dialogflow');
+const uuid = require('uuid');
+const creds = require("./GCPKeys.json");
+const {
+    parseDialogFlowResponse
+} = require("./utills/parseDialogFlowResponse");
 // will use this later to send requests
 // const http = require('http')
 // import env variables
@@ -14,6 +20,44 @@ app.use(express.urlencoded({
 
 app.get('/', (req, res) => {
     res.status(200).send('Server is working.')
+    console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+})
+
+
+const sessionId = uuid.v4();
+
+app.post('/api', async (req, res) => {
+    console.log("process env", process.env.GOOGLE_APPLICATION_CREDENTIALS)
+
+    // Create a new session
+    const sessionClient = new dialogflow.SessionsClient();
+    const sessionPath = sessionClient.sessionPath("agent-name-hkuino", req.body.user ? req.body.user : sessionId);
+
+    const request = {
+        session: sessionPath,
+        queryInput: {
+            text: {
+                // The query to send to the dialogflow agent
+                text: req.body.text ? req.body.text : "Hi",
+                // The language used by the client (en-US)
+                languageCode: 'en-US',
+            },
+        },
+        credentials: creds
+    };
+
+    // Send request and log result
+    const responses = await sessionClient.detectIntent(request);
+    console.log('Detected intent');
+    const result = responses[0].queryResult;
+    console.log(`  Query: ${result.queryText}`);
+    console.log(`  Response: ${result.fulfillmentText}`);
+    if (result.intent) {
+        console.log(`  Intent: ${result.intent.displayName}`);
+    } else {
+        console.log(`  No intent matched.`);
+    }
+    res.status(200).json(parseDialogFlowResponse(result));
 })
 
 app.listen(port, () => {
