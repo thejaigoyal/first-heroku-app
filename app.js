@@ -58,6 +58,7 @@ app.post('/api', async (req, res) => {
         }
         res.status(200).json(parseDialogFlowResponse(result));
     } catch (e) {
+        console.log('error calling dialog flow', e)
         res.status(500).json(e);
     }
 })
