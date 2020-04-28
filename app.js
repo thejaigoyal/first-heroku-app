@@ -1,5 +1,6 @@
 const express = require('express')
 const dialogflow = require('dialogflow');
+var cors = require('cors')
 const uuid = require('uuid');
 const {
     parseDialogFlowResponse
@@ -12,6 +13,7 @@ require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 3000
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({
     extended: true
@@ -30,7 +32,7 @@ app.post('/api', async (req, res) => {
 
     // Create a new session
     const sessionClient = new dialogflow.SessionsClient();
-    const sessionPath = sessionClient.sessionPath("agent-name-hkuino", req.body.user ? req.body.user : sessionId);
+    const sessionPath = sessionClient.sessionPath("agent-name-hkuino", req.body.source ? req.body.source : sessionId);
 
     const request = {
         session: sessionPath,
